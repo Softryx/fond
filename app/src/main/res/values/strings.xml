@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">fond</string>
+    <string name="create_profile">Create profile</string>
+</resources>
