@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name" translatable="false">fond</string>
     <string name="create_profile">Create profile</string>
+    <string name="validate">Validate</string>
+    <string name="cancel">Cancel</string>
+    <string name="profile_name">Profile name</string>
+    <string name="create_new_profile">Create a new profile</string>
 </resources>
