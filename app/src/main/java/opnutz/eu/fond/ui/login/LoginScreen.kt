@@ -15,8 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,26 +40,41 @@ import opnutz.eu.fond.ui.theme.FondTheme
 
 @Composable
 fun LoginScreen(
+    goToHome: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val users by viewModel.users.collectAsState(initial = emptyList())
+    val profiles by viewModel.profiles.collectAsState(initial = emptyList())
+    val currentProfile by viewModel.currentProfile.collectAsState(initial = null)
+
+    LaunchedEffect(currentProfile) {
+        if (currentProfile != null) {
+            goToHome()
+        }
+    }
 
     var showCreateUserDialog by remember {
         mutableStateOf(false)
     }
 
     LoginScreenContent(onClickCreateProfile = { showCreateUserDialog = true },
-        profiles = users,
-        onClickUser = {})
+        profiles = profiles,
+        onClickProfile = {
+            viewModel.setCurrentProfile(it)
+        }
+    )
 
     if (showCreateUserDialog) {
-        Dialog(onDismissRequest = { showCreateUserDialog = false }) {
-            CreateUserDialogContent(onClickValidate = {
-                viewModel.createUser(name = it)
-                showCreateUserDialog = false
-            }, onClickCancel = {
-                showCreateUserDialog = false
-            })
+        Dialog(
+            onDismissRequest = { showCreateUserDialog = false }
+        ) {
+            CreateUserDialogContent(
+                onClickValidate = {
+                    viewModel.createUser(name = it)
+                    showCreateUserDialog = false
+                }, onClickCancel = {
+                    showCreateUserDialog = false
+                }
+            )
         }
     }
 }
@@ -66,7 +82,7 @@ fun LoginScreen(
 
 @Composable
 private fun LoginScreenContent(
-    onClickCreateProfile: () -> Unit, profiles: List<Profile>, onClickUser: (Long) -> Unit
+    onClickCreateProfile: () -> Unit, profiles: List<Profile>, onClickProfile: (Profile) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -74,18 +90,18 @@ private fun LoginScreenContent(
             contentPadding = PaddingValues(start = 28.dp, end = 28.dp, top = 28.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
-            items(profiles.sortedBy { it.name }, key = { it.id }) { user ->
+            items(profiles.sortedBy { it.name }, key = { it.id }) { profile ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onClickUser(user.id)
+                            onClickProfile(profile)
                         },
                     backgroundColor = FondTheme.colors.white,
                     shape = RoundedCornerShape(10.dp),
                     border = BorderStroke(2.dp, FondTheme.colors.black)
                 ) {
-                    Text(text = user.name, modifier = Modifier.padding(12.dp))
+                    Text(text = profile.name, modifier = Modifier.padding(12.dp))
                 }
             }
         }
@@ -103,49 +119,52 @@ private fun LoginScreenContent(
 private fun CreateUserDialogContent(
     onClickValidate: (String) -> Unit, onClickCancel: () -> Unit
 ) {
-    Column(
-        Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(FondTheme.colors.background)
-            .padding(start = 20.dp, end = 20.dp, bottom = 12.dp, top = 12.dp)
+    Surface(
+        color = FondTheme.colors.background,
+        shape = RoundedCornerShape(20.dp),
+        elevation = 4.dp
     ) {
+        Column(
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 12.dp, top = 12.dp)
+        ) {
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            text = stringResource(R.string.create_new_profile)
-        )
-
-        var username by remember {
-            mutableStateOf(TextFieldValue(""))
-        }
-
-        FondTextyField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            value = username,
-            onValueChange = {
-                username = it
-            },
-            placeholder = stringResource(id = R.string.profile_name),
-            label = stringResource(id = R.string.profile_name)
-        )
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            FondButton(
-                text = stringResource(id = R.string.cancel),
-                onClick = onClickCancel,
+            Text(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                text = stringResource(R.string.create_new_profile)
             )
-            FondButton(
-                text = stringResource(id = R.string.validate),
-                onClick = { onClickValidate(username.text) },
-                modifier = Modifier.weight(1f)
+
+            var username by remember {
+                mutableStateOf(TextFieldValue(""))
+            }
+
+            FondTextyField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                value = username,
+                onValueChange = {
+                    username = it
+                },
+                placeholder = stringResource(id = R.string.profile_name),
+                label = stringResource(id = R.string.profile_name)
             )
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                FondButton(
+                    text = stringResource(id = R.string.cancel),
+                    onClick = onClickCancel,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+                FondButton(
+                    text = stringResource(id = R.string.validate),
+                    onClick = { onClickValidate(username.text) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
@@ -168,7 +187,7 @@ private fun LoginScreenPreview() {
                 ), Profile(
                     id = 1, name = "Quentin"
                 )
-            ), onClickUser = {})
+            ), onClickProfile = {})
         }
     }
 }
