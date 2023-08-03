@@ -14,15 +14,30 @@ class ProfileRepository @Inject constructor(
     private val profileDao: ProfileDao, private val fondDataStore: FondDataStore
 ) {
 
-    val currentProfile = fondDataStore.watchCurrentProfilId().distinctUntilChanged().transform {
-        it?.let {
-            profileDao.watchProfileWatchProfilWithId(it).distinctUntilChanged().collect {
-                emit(it)
+    val currentProfile by lazy {
+        fondDataStore.watchCurrentProfilId().distinctUntilChanged().transform {
+            it?.let {
+                profileDao.watchProfileWatchProfileFromId(it).distinctUntilChanged().collect {
+                    emit(it)
+                }
+            } ?: kotlin.run {
+                emit(null)
             }
-        } ?: kotlin.run {
-            emit(null)
-        }
-    }.distinctUntilChanged()
+        }.distinctUntilChanged()
+    }
+
+    val currentProfileWithAccountsAndOperations by lazy {
+        fondDataStore.watchCurrentProfilId().distinctUntilChanged().transform {
+            it?.let {
+                profileDao.watchProfileWatchProfileWithAccountsAndOperationsFromId(it)
+                    .distinctUntilChanged().collect {
+                        emit(it)
+                    }
+            } ?: kotlin.run {
+                emit(null)
+            }
+        }.distinctUntilChanged()
+    }
 
     fun watchProfiles(): Flow<List<Profile>> = profileDao.watchProfiles().distinctUntilChanged()
 

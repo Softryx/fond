@@ -10,12 +10,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val userRepository: ProfileRepository
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     fun resetCurrentProfile() {
         viewModelScope.launch {
-            userRepository.setCurrentProfile(null)
+            profileRepository.setCurrentProfile(null)
         }
     }
 }

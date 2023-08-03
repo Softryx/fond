@@ -1,6 +1,7 @@
 package opnutz.eu.fond.ui.core
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -13,12 +14,13 @@ import androidx.compose.ui.unit.dp
 import opnutz.eu.fond.ui.theme.FondTheme
 
 @Composable
-fun FondTextyField(
+fun FondTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
     label: String? = null,
     placeholder: String? = null,
-    modifier: Modifier = Modifier
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -43,7 +45,8 @@ fun FondTextyField(
             placeholder?.let {
                 Text(text = it)
             }
-        }
+        },
+        keyboardOptions = keyboardOptions
     )
 }
 
@@ -52,7 +55,7 @@ fun FondTextyField(
 @Composable
 private fun FondTextyFieldPreview() {
     FondTheme {
-        FondTextyField(
+        FondTextField(
             value = TextFieldValue("Value"),
             onValueChange = {},
             label = "label",

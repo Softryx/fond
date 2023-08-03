@@ -10,23 +10,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: ProfileRepository
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    val profiles = userRepository.watchProfiles()
+    val profiles = profileRepository.watchProfiles()
 
-    val currentProfile = userRepository.currentProfile
+    val currentProfile = profileRepository.currentProfile
 
-    fun createUser(name: String) {
+    fun createProfile(name: String) {
         viewModelScope.launch {
-            userRepository.createProfile(name)
+            profileRepository.createProfile(name)
         }
     }
 
-
     fun setCurrentProfile(profile: Profile) {
         viewModelScope.launch {
-            userRepository.setCurrentProfile(profile)
+            profileRepository.setCurrentProfile(profile)
         }
     }
 }

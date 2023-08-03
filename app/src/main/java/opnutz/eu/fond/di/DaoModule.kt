@@ -13,4 +13,12 @@ object DaoModule {
     @Provides
     fun profileDao(fondDb: FondDatabase) =
         fondDb.profileDao()
+
+    @Provides
+    fun accountDao(fondDb: FondDatabase) =
+        fondDb.accountDao()
+
+    @Provides
+    fun operationDao(fondDb: FondDatabase) =
+        fondDb.operationDao()
 }

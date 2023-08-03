@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import opnutz.eu.fond.data.vo.Profile
+import opnutz.eu.fond.data.vo.relations.ProfileWithAccountsAndOperations
 
 @Dao
 interface ProfileDao {
@@ -13,7 +14,11 @@ interface ProfileDao {
     fun watchProfiles(): Flow<List<Profile>>
 
     @Query("SELECT * FROM profile WHERE id = :id")
-    fun watchProfileWatchProfilWithId(id: Long): Flow<Profile?>
+    fun watchProfileWatchProfileFromId(id: Long): Flow<Profile?>
+
+    @Query("SELECT * FROM profile WHERE id = :id")
+    fun watchProfileWatchProfileWithAccountsAndOperationsFromId(id: Long): Flow<ProfileWithAccountsAndOperations?>
+
 
     @Insert
     suspend fun insertProfile(profile: Profile)

@@ -5,4 +5,8 @@
     <string name="cancel">Annuler</string>
     <string name="profile_name">Nom du profil</string>
     <string name="create_new_profile">Créer un nouveau profil</string>
+    <string name="account_name">Nom du compte</string>
+    <string name="create_new_account">Créer un nouveau compte</string>
+    <string name="ceiling_in_euro">Plafond en €</string>
+    <string name="ceiling_format">Plafond %s</string>
 </resources>

@@ -4,4 +4,9 @@
     <string name="cancel">Cancel</string>
     <string name="profile_name">Profile name</string>
     <string name="create_new_profile">Create a new profile</string>
+    <string name="money_format" translatable="false">%.2f €</string>
+    <string name="account_name">Account name</string>
+    <string name="create_new_account">Create a new account</string>
+    <string name="ceiling_in_euro">Ceiling in €</string>
+    <string name="ceiling_format">Ceiling %s</string>
 </resources>

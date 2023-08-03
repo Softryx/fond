@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import opnutz.eu.fond.ui.accounts.AccountsScreen
 import opnutz.eu.fond.ui.login.LoginScreen
 
 
@@ -21,8 +22,7 @@ object Route {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FondNavHost(
-    navController: NavHostController,
-    modifier: Modifier
+    navController: NavHostController, modifier: Modifier
 ) {
 
     AnimatedNavHost(
@@ -31,19 +31,15 @@ fun FondNavHost(
         startDestination = Route.LOGIN
     ) {
         composable(route = Route.LOGIN) {
-            LoginScreen(
-                goToHome = {
-                    navController.navigate(Route.HOME)
-                }
-            )
+            LoginScreen(goToHome = {
+                navController.navigate(Route.HOME)
+            })
         }
-        composable(route = Route.HOME) {
-        }
+        composable(route = Route.HOME) {}
         composable(route = Route.ACCOUNTS) {
+            AccountsScreen(goToAccountDetail = {})
         }
-        composable(route = Route.OBJECTIVES) {
-        }
-        composable(route = Route.SETTINGS) {
-        }
+        composable(route = Route.OBJECTIVES) {}
+        composable(route = Route.SETTINGS) {}
     }
 }
