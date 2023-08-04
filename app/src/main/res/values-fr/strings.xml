@@ -9,4 +9,7 @@
     <string name="create_new_account">Créer un nouveau compte</string>
     <string name="ceiling_in_euro">Plafond en €</string>
     <string name="ceiling_format">Plafond %s</string>
+    <string name="value_must_be_positive">La valeur doit être positive</string>
+    <string name="field_must_not_be_empty">Le champ ne doit pas être vide</string>
+    <string name="field_must_be_a_correct_number">Le champ doit être un nombre correct</string>
 </resources>

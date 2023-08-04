@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -23,25 +24,20 @@ import opnutz.eu.fond.ui.theme.FondTheme
 
 data class Input(val label: String, val type: Type) {
     enum class Type {
-        TEXT,
-        DOUBLE
+        TEXT, DOUBLE, POSITIVE_DOUBLE
     }
 }
 
 @Composable
 fun InputDialog(
-    title: String,
-    inputs: List<Input>,
-    onValidate: (List<Any>) -> Unit,
-    onDismiss: () -> Unit
+    title: String, inputs: List<Input>, onValidate: (List<Any>) -> Unit, onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
     Dialog(
         onDismissRequest = onDismiss
     ) {
         Surface(
-            color = FondTheme.colors.background,
-            shape = RoundedCornerShape(20.dp),
-            elevation = 4.dp
+            color = FondTheme.colors.background, shape = RoundedCornerShape(20.dp), elevation = 4.dp
         ) {
             Column(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 12.dp, top = 12.dp)
@@ -50,8 +46,7 @@ fun InputDialog(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    text = title
+                        .padding(bottom = 12.dp), text = title
                 )
 
                 val values = remember {
@@ -61,10 +56,15 @@ fun InputDialog(
                                 when (it.type) {
                                     Input.Type.TEXT -> ""
                                     Input.Type.DOUBLE -> "0.0"
+                                    Input.Type.POSITIVE_DOUBLE -> "1.0"
                                 }
                             )
                         }.toTypedArray())
                     )
+                }
+
+                val errors = remember {
+                    mutableStateListOf<String?>(*arrayOfNulls(inputs.size))
                 }
 
 
@@ -83,8 +83,10 @@ fun InputDialog(
                             keyboardType = when (input.type) {
                                 Input.Type.TEXT -> KeyboardType.Text
                                 Input.Type.DOUBLE -> KeyboardType.Number
+                                Input.Type.POSITIVE_DOUBLE -> KeyboardType.Number
                             }
-                        )
+                        ),
+                        error = errors[index]
                     )
                 }
 
@@ -97,19 +99,60 @@ fun InputDialog(
                             .padding(end = 8.dp)
                     )
                     FondButton(
-                        text = stringResource(id = R.string.validate),
-                        onClick = {
-                            onValidate(
-                                values.mapIndexed { index, textFieldValue ->
-                                    when (inputs[index].type) {
-                                        Input.Type.TEXT -> textFieldValue.text
-                                        Input.Type.DOUBLE -> textFieldValue.text.toDouble()
+                        text = stringResource(id = R.string.validate), onClick = {
+                            var isValid = true
+                            val convertedValues = values.mapIndexed { index, textFieldValue ->
+                                when (inputs[index].type) {
+                                    Input.Type.TEXT -> {
+                                        val value = textFieldValue.text
+                                        if (value.isBlank()) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.field_must_not_be_empty)
+                                        }
+                                        value
+                                    }
+
+                                    Input.Type.DOUBLE -> {
+                                        val text = textFieldValue.text
+                                        val value = text.toDoubleOrNull()
+                                        if (text.isBlank()) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.field_must_not_be_empty)
+                                        } else if (value == null) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.field_must_be_a_correct_number)
+                                        }
+                                        value ?: 0.0
+                                    }
+
+                                    Input.Type.POSITIVE_DOUBLE -> {
+                                        val text = textFieldValue.text
+                                        val value = text.toDoubleOrNull()
+                                        if (text.isBlank()) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.field_must_not_be_empty)
+                                        } else if (value == null) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.field_must_be_a_correct_number)
+                                        } else if (value <= 0.0) {
+                                            isValid = false
+                                            errors[index] =
+                                                context.getString(R.string.value_must_be_positive)
+                                        }
+                                        value ?: 0.0
                                     }
                                 }
-                            )
-                            onDismiss()
-                        },
-                        modifier = Modifier.weight(1f)
+                            }
+                            if (isValid) {
+                                onValidate(convertedValues)
+                                onDismiss()
+                            }
+                        }, modifier = Modifier.weight(1f)
                     )
                 }
             }
@@ -121,17 +164,11 @@ fun InputDialog(
 @Composable
 private fun InputDialogSingleInputPreview() {
     FondTheme {
-        InputDialog(
-            title = stringResource(id = R.string.create_new_profile),
-            inputs = listOf(
-                Input(
-                    label = stringResource(id = R.string.profile_name),
-                    type = Input.Type.TEXT
-                )
-            ),
-            onValidate = {},
-            onDismiss = {}
-        )
+        InputDialog(title = stringResource(id = R.string.create_new_profile), inputs = listOf(
+            Input(
+                label = stringResource(id = R.string.profile_name), type = Input.Type.TEXT
+            )
+        ), onValidate = {}, onDismiss = {})
     }
 }
 
@@ -139,20 +176,12 @@ private fun InputDialogSingleInputPreview() {
 @Composable
 private fun InputDialogDoubleInputPreview() {
     FondTheme {
-        InputDialog(
-            title = stringResource(id = R.string.create_new_profile),
-            inputs = listOf(
-                Input(
-                    label = stringResource(id = R.string.account_name),
-                    type = Input.Type.TEXT
-                ),
-                Input(
-                    label = stringResource(id = R.string.ceiling_in_euro),
-                    type = Input.Type.DOUBLE
-                )
-            ),
-            onValidate = {},
-            onDismiss = {}
-        )
+        InputDialog(title = stringResource(id = R.string.create_new_profile), inputs = listOf(
+            Input(
+                label = stringResource(id = R.string.account_name), type = Input.Type.TEXT
+            ), Input(
+                label = stringResource(id = R.string.ceiling_in_euro), type = Input.Type.DOUBLE
+            )
+        ), onValidate = {}, onDismiss = {})
     }
 }

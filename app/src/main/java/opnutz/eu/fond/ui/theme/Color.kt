@@ -9,6 +9,7 @@ data class FondColors(
     val primary: Color,
     val secondary: Color,
     val background: Color,
+    val error: Color,
     val black: Color,
     val white: Color
 )
@@ -18,6 +19,7 @@ internal val LocalColors = staticCompositionLocalOf {
         primary = Color.Unspecified,
         secondary = Color.Unspecified,
         background = Color.Unspecified,
+        error = Color.Unspecified,
         black = Color.Unspecified,
         white = Color.Unspecified
     )

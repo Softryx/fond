@@ -1,5 +1,8 @@
 package opnutz.eu.fond.ui.core
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
@@ -18,36 +21,50 @@ fun FondTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
+    error: String? = null,
     label: String? = null,
     placeholder: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-    OutlinedTextField(
-        modifier = modifier,
-        value = value,
-        onValueChange = onValueChange,
-        shape = RoundedCornerShape(10.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = FondTheme.colors.black,
-            cursorColor = FondTheme.colors.primary,
-            focusedLabelColor = FondTheme.colors.primary,
-            unfocusedLabelColor = FondTheme.colors.black,
-            unfocusedBorderColor = FondTheme.colors.black,
-            focusedBorderColor = FondTheme.colors.primary,
-            backgroundColor = Color.Transparent
-        ),
-        label = {
-            label?.let {
-                Text(text = it)
-            }
-        },
-        placeholder = {
-            placeholder?.let {
-                Text(text = it)
-            }
-        },
-        keyboardOptions = keyboardOptions
-    )
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = value,
+            onValueChange = onValueChange,
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = FondTheme.colors.black,
+                cursorColor = FondTheme.colors.primary,
+                errorCursorColor = FondTheme.colors.primary,
+                focusedLabelColor = FondTheme.colors.primary,
+                unfocusedLabelColor = FondTheme.colors.black,
+                unfocusedBorderColor = FondTheme.colors.black,
+                focusedBorderColor = FondTheme.colors.primary,
+                backgroundColor = Color.Transparent,
+                errorBorderColor = FondTheme.colors.error,
+                errorLabelColor = FondTheme.colors.error
+            ),
+            label = {
+                label?.let {
+                    Text(text = it)
+                }
+            },
+            placeholder = {
+                placeholder?.let {
+                    Text(text = it)
+                }
+            },
+            keyboardOptions = keyboardOptions,
+            isError = error != null
+        )
+        error?.let {
+            Text(
+                modifier = Modifier.padding(top = 2.dp),
+                text = error,
+                color = FondTheme.colors.error
+            )
+        }
+    }
 }
 
 
@@ -60,6 +77,20 @@ private fun FondTextyFieldPreview() {
             onValueChange = {},
             label = "label",
             placeholder = "placeholder"
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FondTextyFieldErrorPreview() {
+    FondTheme {
+        FondTextField(
+            value = TextFieldValue("Value"),
+            onValueChange = {},
+            label = "label",
+            placeholder = "placeholder",
+            error = "Erreur"
         )
     }
 }

@@ -72,7 +72,7 @@ fun AccountsScreen(
                 ),
                 Input(
                     label = stringResource(id = R.string.ceiling_in_euro),
-                    type = Input.Type.DOUBLE
+                    type = Input.Type.POSITIVE_DOUBLE
                 )
             ),
             onValidate = {

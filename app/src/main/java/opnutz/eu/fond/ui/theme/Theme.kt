@@ -12,6 +12,7 @@ fun FondTheme(content: @Composable () -> Unit) {
         primary = colorResource(id = R.color.primary),
         secondary = colorResource(id = R.color.secondary),
         background = colorResource(id = R.color.background),
+        error = colorResource(id = R.color.error),
         black = colorResource(id = R.color.black),
         white = colorResource(id = R.color.white)
     )
