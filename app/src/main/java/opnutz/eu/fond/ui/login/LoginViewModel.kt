@@ -13,7 +13,7 @@ class LoginViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    val profiles = profileRepository.watchProfiles()
+    val profiles = profileRepository.profiles
 
     val currentProfile = profileRepository.currentProfile
 

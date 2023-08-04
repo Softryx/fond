@@ -18,5 +18,6 @@ data class Operation(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val accountId: Long,
     val amount: Double,
-    val date: String
+    val date: String,
+    val name: String
 )

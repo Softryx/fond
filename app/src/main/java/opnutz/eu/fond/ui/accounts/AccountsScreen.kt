@@ -197,17 +197,17 @@ private fun AccountsScreenPreview() {
                             account = Account(
                                 id = 0, profileId = 0, name = "Compte Courant", ceiling = 1000.0
                             ), operations = listOf(
-                                Operation(id = 0, accountId = 0, 100.0, "2023-08-03"),
-                                Operation(id = 1, accountId = 0, -20.0, "2023-08-03"),
-                                Operation(id = 2, accountId = 0, 50.0, "2023-08-03"),
+                                Operation(id = 0, accountId = 0, 100.0, "03/08/2023", name = ""),
+                                Operation(id = 1, accountId = 0, -20.0, "03/08/2023", name = ""),
+                                Operation(id = 2, accountId = 0, 50.0, "03/08/2023", name = "")
                             )
                         ), AccountWithOperations(
                             account = Account(
                                 id = 1, profileId = 0, name = "Livret A", ceiling = 3000.0
                             ), operations = listOf(
-                                Operation(id = 3, accountId = 1, 200.0, "2023-08-03"),
-                                Operation(id = 4, accountId = 1, -50.0, "2023-08-03"),
-                                Operation(id = 5, accountId = 1, 30.0, "2023-08-03"),
+                                Operation(id = 3, accountId = 1, 200.0, "03/08/2023", name = ""),
+                                Operation(id = 4, accountId = 1, -50.0, "03/08/2023", name = ""),
+                                Operation(id = 5, accountId = 1, 30.0, "03/08/2023", name = "")
                             )
                         )
                     )

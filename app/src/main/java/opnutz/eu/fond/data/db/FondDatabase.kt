@@ -13,7 +13,7 @@ import opnutz.eu.fond.data.vo.Profile
         Profile::class,
         Account::class,
         Operation::class
-    ], version = 2
+    ], version = 3
 )
 abstract class FondDatabase : RoomDatabase() {
 

@@ -1,6 +1,5 @@
 package opnutz.eu.fond.data.repository
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.transform
 import opnutz.eu.fond.data.FondDataStore
@@ -29,7 +28,7 @@ class ProfileRepository @Inject constructor(
     val currentProfileWithAccountsAndOperations by lazy {
         fondDataStore.watchCurrentProfilId().distinctUntilChanged().transform {
             it?.let {
-                profileDao.watchProfileWatchProfileWithAccountsAndOperationsFromId(it)
+                profileDao.watchProfileWithAccountsAndOperationsFromId(it)
                     .distinctUntilChanged().collect {
                         emit(it)
                     }
@@ -39,7 +38,7 @@ class ProfileRepository @Inject constructor(
         }.distinctUntilChanged()
     }
 
-    fun watchProfiles(): Flow<List<Profile>> = profileDao.watchProfiles().distinctUntilChanged()
+    val profiles by lazy { profileDao.watchProfiles().distinctUntilChanged() }
 
     suspend fun createProfile(name: String) {
         profileDao.insertProfile(Profile(name = name))

@@ -12,4 +12,8 @@
     <string name="value_must_be_positive">La valeur doit être positive</string>
     <string name="field_must_not_be_empty">Le champ ne doit pas être vide</string>
     <string name="field_must_be_a_correct_number">Le champ doit être un nombre correct</string>
+    <string name="create_new_operation">Créer une nouvelle opération</string>
+    <string name="operation_name">Nom de l\'opération</string>
+    <string name="amont_in_euro">Montant en €</string>
+    <string name="date">Date (JJ/MM/AAAA)</string>
 </resources>

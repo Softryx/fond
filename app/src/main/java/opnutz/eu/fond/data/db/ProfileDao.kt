@@ -17,7 +17,7 @@ interface ProfileDao {
     fun watchProfileWatchProfileFromId(id: Long): Flow<Profile?>
 
     @Query("SELECT * FROM profile WHERE id = :id")
-    fun watchProfileWatchProfileWithAccountsAndOperationsFromId(id: Long): Flow<ProfileWithAccountsAndOperations?>
+    fun watchProfileWithAccountsAndOperationsFromId(id: Long): Flow<ProfileWithAccountsAndOperations?>
 
 
     @Insert
